@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>공간예약</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="min-h-screen bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <a href="/" class="text-blue-600 hover:text-blue-500">← 메인으로</a>
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow mt-6">
+            <div class="p-6 border-b">
+                <h1 class="text-2xl font-bold">기숙사 공간 예약</h1>
+                <p class="text-gray-500">스터디룸/세미나실 예약</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">학번</label>
+                        <input id="student-id" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">이름</label>
+                        <input id="name" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">연락처</label>
+                        <input id="phone" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">이메일</label>
+                        <input id="email" type="email" class="w-full border rounded p-2" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">공간</label>
+                        <select id="resv-room" class="w-full border rounded p-2">
+                            <option value="R101">R101 (스터디룸)</option>
+                            <option value="R102">R102 (세미나실)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">날짜</label>
+                        <input id="resv-date" type="date" class="w-full border rounded p-2" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">시간대</label>
+                        <select id="resv-slot" class="w-full border rounded p-2"></select>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="btn-check" class="flex-1 border border-gray-300 py-2 rounded hover:bg-gray-50">가용 확인</button>
+                    <button id="btn-reserve" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-500">예약하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- app.js는 server.js에서 자동 주입됨 -->
+</body>
+</html>

@@ -1,1 +1,0 @@
-# mosirae_dormitory_service

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>건국대학교 글로컬캠퍼스 모시래학사</title>
+    <meta name="description" content="건국대학교 글로컬캠퍼스 생활관 모시래학사 공식 홈페이지입니다. 입사신청, 생활수칙, 공지사항 등을 확인하세요.">
+    <meta name="keywords" content="건국대학교, 글로컬캠퍼스, 모시래학사, 기숙사, 생활관, 대학교">
+    
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a7f4c;
+            --primary-light: #248f5c;
+            --primary-dark: #0f5a35;
+            --background: #ffffff;
+            --foreground: #0a1628;
+            --card: #ffffff;
+            --card-foreground: #0a1628;
+            --muted: #f4f4f5;
+            --muted-foreground: #71717a;
+            --border: #e5e7eb;
+            --destructive: #dc2626;
+            --secondary: #f0f9f4;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            color: var(--foreground);
+            background-color: var(--background);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 0;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--foreground);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .login-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--background);
+            color: var(--foreground);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            background: var(--muted);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: absolute;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .mobile-nav.active {
+            display: block;
+        }
+
+        .mobile-nav a {
+            display: block;
+            padding: 1rem;
+            color: var(--foreground);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Hero Slideshow */
+        .hero-section {
+            position: relative;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .slide-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .slide-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.75rem;
+            padding: 2rem;
+        }
+
+        .slide-card h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .slide-card p {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 2rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .slide-btn:hover {
+            background: var(--primary-light);
+        }
+
+        .slide-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background 0.2s;
+        }
+
+        .slide-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .slide-nav-btn.prev {
+            left: 1rem;
+        }
+
+        .slide-nav-btn.next {
+            right: 1rem;
+        }
+
+        .slide-indicators {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .slide-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .slide-indicator.active {
+            background: white;
+        }
+
+        .play-pause-btn {
+            margin-left: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Quick Services */
+        .services-section {
+            padding: 4rem 1rem;
+            background: var(--muted);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--muted-foreground);
+            font-size: 1.125rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .service-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: rgba(26, 127, 76, 0.2);
+        }
+
+        .service-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: rgba(26, 127, 76, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 2rem;
+            transition: background 0.3s;
+        }
+
+        .service-card:hover .service-icon {
+            background: rgba(26, 127, 76, 0.2);
+        }
+
+        .service-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .service-card:hover h3 {
+            color: var(--primary);
+        }
+
+        .service-card p {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Announcements Section */
+        .announcements-section {
+            padding: 4rem 1rem;
+        }
+
+        .announcements-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .announcements-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .announcement-item {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .announcement-item:hover {
+            background: var(--muted);
+        }
+
+        .announcement-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge.important {
+            background: var(--destructive);
+            color: white;
+        }
+
+        .badge.recruit {
+            background: var(--primary);
+            color: white;
+        }
+
+        .badge.normal {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        .announcement-date {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .announcement-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .announcement-item p {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .meal-item {
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .meal-header h4 {
+            font-size: 1.125rem;
+        }
+
+        .meal-badge {
+            background: var(--muted);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        .meal-menu {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .menu-item {
+            background: rgba(244, 244, 245, 0.3);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .more-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--background);
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .slide-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .slide-card p {
+                font-size: 1rem;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <div><img src = "./images/logo.jpg"; width="50px";height="50px";></div>
+                <div class="logo-text">
+                    <p style="color:green">건국대학교 글로컬캠퍼스</p>
+                    <p>생활관 모시래학사</p>
+                </div>
+            </div>
+
+            <nav id="desktopNav">
+                <a href="#about">생활관소개</a>
+                <a href="#life">모시래 LIFE</a>
+                <a href="#rules">생활수칙</a>
+                <a href="#checkin">입/퇴관 안내</a>
+                <a href="#info">정보광장</a>
+                <a href="#contact">소리함</a>
+                <button class="login-btn">로그인</button>
+            </nav>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="mobile-nav" id="mobileNav">
+            <a href="#about">생활관소개</a>
+            <a href="#life">모시래 LIFE</a>
+            <a href="#rules">생활수칙</a>
+            <a href="#checkin">입/퇴관 안내</a>
+            <a href="#info">정보광장</a>
+            <a href="#contact">소리함</a>
+        </div>
+    </header>
+
+    <!-- Hero Slideshow -->
+    <section class="hero-section">
+        <div class="slide active" data-slide="0">
+            <img src="./images/slide1.jpg" alt="Campus sports field" class="slide-bg">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <div class="slide-card">
+                    <h2>모시래학사 25'2 관생 추가모집 공고</h2>
+                    <p>8/14(목) 09시 ~ 마감 시까지</p>
+                    <p style="opacity: 0.8">※ 선착순 메일 접수</p>
+                    <a href="#recruitment" class="slide-btn">바로가기</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-slide="1">
+            <img src="./images/slide2.jpg" alt="Dormitory building" class="slide-bg">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <div class="slide-card">
+                    <h2>모시래학사 25'2 식당 이용 수칙 안내</h2>
+                    <p>새로운 식당 운영 방침</p>
+                    <p style="opacity: 0.8">상세 내용을 확인해주세요</p>
+                    <a href="#dining" class="slide-btn">바로가기</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" data-slide="2">
+            <img src="./images/slide3.webp" alt="Campus winter aerial" class="slide-bg">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <div class="slide-card">
+                    <h2>생활관 25'2 외박 신청 안내</h2>
+                    <p>외박 신청 절차 안내</p>
+                    <p style="opacity: 0.8">온라인 신청 바로가기</p>
+                    <a href="#overnight" class="slide-btn">바로가기</a>
+                </div>
+            </div>
+        </div>
+
+        <button class="slide-nav-btn prev" id="prevSlide" aria-label="이전">‹</button>
+        <button class="slide-nav-btn next" id="nextSlide" aria-label="다음">›</button>
+
+        <div class="slide-indicators">
+            <button class="slide-indicator active" data-index="0"></button>
+            <button class="slide-indicator" data-index="1"></button>
+            <button class="slide-indicator" data-index="2"></button>
+            <button class="play-pause-btn" id="playPauseBtn" aria-label="재생/정지">⏸</button>
+        </div>
+    </section>
+
+    <!-- Quick Services -->
+    <section class="services-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>빠른 서비스</h2>
+                <p>자주 사용하는 서비스에 빠르게 접근하세요</p>
+            </div>
+
+            <div class="services-grid">
+                <a href="#checkin" class="service-card">
+                    <div class="service-icon">🏠</div>
+                    <h3>입·퇴실 신청</h3>
+                    <p>기숙사 입퇴실 신청</p>
+                </a>
+
+                <a href="#overnight" class="service-card">
+                    <div class="service-icon">🕐</div>
+                    <h3>외박신청</h3>
+                    <p>외박 신청 및 관리</p>
+                </a>
+
+                <a href="#application" class="service-card">
+                    <div class="service-icon">🏢</div>
+                    <h3>관생신청</h3>
+                    <p>생활관 입주 신청</p>
+                </a>
+
+                <a href="#points" class="service-card">
+                    <div class="service-icon">🛡️</div>
+                    <h3>상/벌점 조회</h3>
+                    <p>개인 상벌점 확인</p>
+                </a>
+
+                <a href="#maintenance" class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3>민원/수리</h3>
+                    <p>시설 수리 신청</p>
+                </a>
+
+                <a href="#forms" class="service-card">
+                    <div class="service-icon">📄</div>
+                    <h3>서식 다운로드</h3>
+                    <p>각종 서식 및 양식</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Announcements -->
+    <section class="announcements-section">
+        <div class="container">
+            <div class="announcements-grid">
+                <!-- 공지사항 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span>📅</span>
+                            공지사항
+                        </div>
+                        <button class="more-btn">더보기 ›</button>
+                    </div>
+                    <div class="card-content">
+                        <div class="announcement-item">
+                            <div class="announcement-meta">
+                                <span class="badge important">중요</span>
+                                <span class="announcement-date">2025-08-27</span>
+                            </div>
+                            <h4>25-2 입시 이용 수칙 안내</h4>
+                            <p>새 학기 생활관 이용에 관한 중요 안내사항입니다.</p>
+                        </div>
+
+                        <div class="announcement-item">
+                            <div class="announcement-meta">
+                                <span class="badge normal">일반</span>
+                                <span class="announcement-date">2025-08-27</span>
+                            </div>
+                            <h4>25-2 생활관 위반 신청안내서</h4>
+                            <p>생활관 규정 위반 시 신청 절차에 대한 안내입니다.</p>
+                        </div>
+
+                        <div class="announcement-item">
+                            <div class="announcement-meta">
+                                <span class="badge recruit">모집</span>
+                                <span class="announcement-date">2025-08-25</span>
+                            </div>
+                            <h4>25-2 모시래학사 봉사활동 선발안내</h4>
+                            <p>생활관 봉사활동 참여자를 모집합니다.</p>
+                        </div>
+
+                        <div class="announcement-item">
+                            <div class="announcement-meta">
+                                <span class="badge recruit">모집</span>
+                                <span class="announcement-date">2025-08-19</span>
+                            </div>
+                            <h4>25-2 입시도우미(자치위 도우미) 선발 안내</h4>
+                            <p>자치위원회 도우미 선발에 관한 공지사항입니다.</p>
+                        </div>
+
+                        <div class="announcement-item">
+                            <div class="announcement-meta">
+                                <span class="badge normal">일반</span>
+                                <span class="announcement-date">2025-07-31</span>
+                            </div>
+                            <h4>25-2 모시래학사 입사 안내</h4>
+                            <p>새 학기 입사 절차 및 준비사항 안내입니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오늘의 식단 -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            오늘의 식단
+                            <span style="font-size: 0.875rem; font-weight: normal; color: var(--muted-foreground); margin-left: 0.5rem;">2025-09-07</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="meal-item">
+                            <div class="meal-header">
+                                <h4>아침</h4>
+                                <span class="meal-badge">997kcal/43.88g</span>
+                            </div>
+                            <div class="meal-menu">
+                                <span class="menu-item">기장밥</span>
+                                <span class="menu-item">시래기곰국</span>
+                                <span class="menu-item">고등어조림</span>
+                                <span class="menu-item">미트볼옵</span>
+                                <span class="menu-item">모듬야채겉절이</span>
+                                <span class="menu-item">배추김치</span>
+                                <span class="menu-item">우유</span>
+                            </div>
+                        </div>
+
+                        <div class="meal-item">
+                            <div class="meal-header">
+                                <h4>점심</h4>
+                                <span class="meal-badge">1101kcal/46.25g</span>
+                            </div>
+                            <div class="meal-menu">
+                                <span class="menu-item">현미쌀밥</span>
+                                <span class="menu-item">참치찌개</span>
+                                <span class="menu-item">군만두</span>
+                                <span class="menu-item">깐쇼새우볼</span>
+                                <span class="menu-item">건향화두부숙</span>
+                                <span class="menu-item">총각김치</span>
+                            </div>
+                        </div>
+
+                        <div class="meal-item">
+                            <div class="meal-header">
+                                <h4>저녁</h4>
+                                <span class="meal-badge">1052kcal/47.25g</span>
+                            </div>
+                            <div class="meal-menu">
+                                <span class="menu-item">흰미쌀밥</span>
+                                <span class="menu-item">순두부찌개</span>
+                                <span class="menu-item">갈치찜</span>
+                                <span class="menu-item">부산어묵</span>
+                                <span class="menu-item">배추김치</span>
+                                <span class="menu-item">배추음치</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileNav.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        const mobileNavLinks = mobileNav.querySelectorAll('a');
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+            });
+        });
+
+        // Slideshow functionality
+        let currentSlide = 0;
+        let isPlaying = true;
+        let slideInterval;
+
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.slide-indicator');
+        const prevBtn = document.getElementById('prevSlide');
+        const nextBtn = document.getElementById('nextSlide');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function startSlideshow() {
+            isPlaying = true;
+            playPauseBtn.textContent = '⏸';
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function stopSlideshow() {
+            isPlaying = false;
+            playPauseBtn.textContent = '▶';
+            clearInterval(slideInterval);
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                stopSlideshow();
+            } else {
+                startSlideshow();
+            }
+        }
+
+        // Event listeners
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            if (isPlaying) {
+                stopSlideshow();
+                startSlideshow();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            if (isPlaying) {
+                stopSlideshow();
+                startSlideshow();
+            }
+        });
+
+        playPauseBtn.addEventListener('click', togglePlayPause);
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+                if (isPlaying) {
+                    stopSlideshow();
+                    startSlideshow();
+                }
+            });
+        });
+
+        // Start slideshow on load
+        startSlideshow();
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
