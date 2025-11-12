@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-// HTTP Basic Auth ¹Ìµé¿þ¾î
+// HTTP Basic Auth ï¿½Ìµï¿½ï¿½ï¿½ï¿½
 export default function adminAuth(req, res, next) {
     const header = req.headers.authorization || "";
-    // Çü½Ä: "Basic base64(user:pass)"
+    // ï¿½ï¿½ï¿½ï¿½: "Basic base64(user:pass)"
     if (!header.startsWith("Basic ")) {
         res.set("WWW-Authenticate", 'Basic realm="admin"');
         return res.status(401).send("Auth required");
@@ -21,7 +21,7 @@ export default function adminAuth(req, res, next) {
 
     const [user, pass] = decoded.split(":");
     if (user === process.env.ADMIN_USER && pass === process.env.ADMIN_PASS) {
-        return next(); // ÀÎÁõ ¼º°ø
+        return next(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     res.set("WWW-Authenticate", 'Basic realm="admin"');

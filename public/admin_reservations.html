@@ -55,24 +55,24 @@
         (function () {
             const K = (s) => decodeURIComponent(s);
 
-            // ===== ÇÑ±Û ÅØ½ºÆ® ÁÖÀÔ (ÆÛ¼¾Æ® ÀÎÄÚµù »ç¿ë) =====
-            document.title = K("%EC%98%88%EC%95%BD%20%EB%AA%A9%EB%A1%9D%28%EA%B4%80%EB%A6%AC%EC%9E%90%29"); // ¿¹¾à ¸ñ·Ï(°ü¸®ÀÚ)
-            document.getElementById("lnk-home").textContent = K("%E2%86%90%20%EB%A9%94%EC%9D%B8"); // ¡ç ¸ÞÀÎ
-            document.getElementById("txt-title-mini").textContent = K("%EC%98%88%EC%95%BD%20%EB%AA%A9%EB%A1%9D%28%EC%A0%84%EC%B2%B4%29"); // ¿¹¾à ¸ñ·Ï(ÀüÃ¼)
-            document.getElementById("lnk-wl").textContent = K("%EB%8C%80%EA%B8%B0%EC%97%B4%20%EA%B4%80%EB%A6%AC"); // ´ë±â¿­ °ü¸®
+            // ===== ï¿½Ñ±ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ (ï¿½Û¼ï¿½Æ® ï¿½ï¿½ï¿½Úµï¿½ ï¿½ï¿½ï¿½) =====
+            document.title = K("%EC%98%88%EC%95%BD%20%EB%AA%A9%EB%A1%9D%28%EA%B4%80%EB%A6%AC%EC%9E%90%29"); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+            document.getElementById("lnk-home").textContent = K("%E2%86%90%20%EB%A9%94%EC%9D%B8"); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            document.getElementById("txt-title-mini").textContent = K("%EC%98%88%EC%95%BD%20%EB%AA%A9%EB%A1%9D%28%EC%A0%84%EC%B2%B4%29"); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½(ï¿½ï¿½Ã¼)
+            document.getElementById("lnk-wl").textContent = K("%EB%8C%80%EA%B8%B0%EC%97%B4%20%EA%B4%80%EB%A6%AC"); // ï¿½ï¿½â¿­ ï¿½ï¿½ï¿½ï¿½
             document.getElementById("txt-title").textContent = K("%EC%98%88%EC%95%BD%20%EB%AA%A9%EB%A1%9D%28%EC%A0%84%EC%B2%B4%29");
             document.getElementById("txt-sub").textContent = K("%ED%95%84%ED%84%B0%20%EC%97%86%EC%9D%B4%20%E2%80%9C%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0%E2%80%9D%EB%A5%BC%20%EB%88%84%EB%A5%B4%EB%A9%B4%20%EC%A0%84%EC%B2%B4%20%EC%98%88%EC%95%BD%20%EB%82%B4%EC%97%AD%EC%9D%B4%20%ED%91%9C%EC%8B%9C%EB%90%A9%EB%8B%88%EB%8B%A4.");
-            // ÇÊÅÍ ¾øÀÌ ¡°ºÒ·¯¿À±â¡±¸¦ ´©¸£¸é ÀüÃ¼ ¿¹¾à ³»¿ªÀÌ Ç¥½ÃµË´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò·ï¿½ï¿½ï¿½ï¿½â¡±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ÃµË´Ï´ï¿½.
             document.getElementById("adm-room").placeholder = K("%EA%B3%B5%EA%B0%84%28%EC%98%88%3A%20R101%2C%20%EB%B9%84%EC%9A%B0%EB%A9%B4%20%EC%A0%84%EC%B2%B4%29");
-            document.getElementById("adm-load").textContent = K("%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"); // ºÒ·¯¿À±â
-            document.getElementById("th-action").textContent = K("%EC%A1%B0%EC%9E%91"); // Á¶ÀÛ
+            document.getElementById("adm-load").textContent = K("%EB%B6%88%EB%9F%AC%EC%98%A4%EA%B8%B0"); // ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½
+            document.getElementById("th-action").textContent = K("%EC%A1%B0%EC%9E%91"); // ï¿½ï¿½ï¿½ï¿½
 
             const room = document.getElementById("adm-room");
             const date = document.getElementById("adm-date");
             const load = document.getElementById("adm-load");
             const tbody = document.getElementById("adm-tbody");
 
-            // ¿À´Ã ³¯Â¥ placeholder
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ placeholder
             if (!date.value) {
                 const t = new Date(); const y = t.getFullYear(); const m = String(t.getMonth() + 1).padStart(2, "0"); const d = String(t.getDate()).padStart(2, "0");
                 date.placeholder = `${y}-${m}-${d}`;
@@ -83,7 +83,7 @@
                 if (room.value) q.set("roomId", room.value);
                 if (date.value) q.set("date", date.value);
 
-                // °ü¸®ÀÚ Àü¿ë API (Basic Auth·Î º¸È£µÊ)
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ API (Basic Authï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½)
                 const res = await fetch(`/api/reservations?${q}`);
                 const json = await res.json();
 
@@ -106,7 +106,7 @@
                     tbody.appendChild(tr);
                 });
 
-                // Ãë¼Ò ¹öÆ°
+                // ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°
                 [...tbody.querySelectorAll("button[data-id]")].forEach(btn => {
                     btn.addEventListener("click", async () => {
                         const id = btn.getAttribute("data-id");
@@ -114,13 +114,13 @@
                         const res = await fetch(`/api/reservations/${id}/cancel`, { method: "PATCH" });
                         const json = await res.json();
                         if (!json.ok) { alert(K("%EC%B7%A8%EC%86%8C%20%EC%8B%A4%ED%8C%A8")); return; }
-                        alert(K("%EC%B7%A8%EC%86%8C%20%EC%99%84%EB%A3%8C"));// + (json.data.promoted ? " (´ë±â¿­ ½Â°ÝµÊ)" : "")
+                        alert(K("%EC%B7%A8%EC%86%8C%20%EC%99%84%EB%A3%8C"));// + (json.data.promoted ? " (ï¿½ï¿½â¿­ ï¿½Â°Ýµï¿½)" : "")
                         load.click();
                     });
                 });
             });
 
-            // ÀÚµ¿ Á¶È¸
+            // ï¿½Úµï¿½ ï¿½ï¿½È¸
             load.click();
         })();
     </script>

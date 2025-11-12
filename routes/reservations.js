@@ -1,130 +1,177 @@
-import express from "express";
-import Reservation from "../models/Reservation.js";
-import adminAuth from "../middleware/adminAuth.js";
+ï»¿// routes/reservations.js (ESM)
+import express from 'express';
 
-const router = express.Router();
-
-const DEFAULT_SLOTS = [
-    "09:00-11:00", "11:00-13:00", "13:00-15:00",
-    "15:00-17:00", "17:00-19:00", "19:00-21:00"
+const TIMESLOTS = [
+    "09:00-10:00", "10:00-11:00", "11:00-12:00",
+    "12:00-13:00", "13:00-14:00", "14:00-15:00",
+    "15:00-16:00", "16:00-17:00", "17:00-18:00",
+    "18:00-19:00", "19:00-20:00", "20:00-21:00"
 ];
 
-// \uXXXX ¸Ş½ÃÁö
-const MSG = {
-    NEED_ROOM_DATE: "\uacf3\uacfc \ub0a0\uc9dc\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.",
-    NEED_FIELDS: "\uacf3\uacfc/\ub0a0\uc9dc/\uc2dc\uac04\ub300\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.",
-    AVAIL_FAIL: "\uac00\uc6a9\uc131 \uc870\ud68c \uc2e4\ud328",
-    REQ_FAIL: "\uc608\uc57d \uc694\uccad \uc2e4\ud328",
-    NOT_FOUND: "\ub370\uc774\ud130\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.",
-    DUP_STUDENT: "\ub3d9\uc77c \ud559\uc0dd\uc758 \ub3d9\uc77c \uc2dc\uac04\ub300 \uc911\ubcf5 \uc608\uc57d\uc740 \ubd88\uac00\ud569\ub2c8\ub2e4."
-};
+const SPACES = [
+    { id: "ROOM_A", name: "ìŠ¤í„°ë””ë£¸ A", capacity: 2 },
+    { id: "ROOM_B", name: "ìŠ¤í„°ë””ë£¸ B", capacity: 2 },
+    { id: "HALL_1", name: "ë‹¤ëª©ì í™€ 1", capacity: 10 },
+];
 
-// °¡¿ë¼º (°ø°³)
-router.get("/availability", async (req, res) => {
-    const { roomId, date } = req.query;
-    if (!roomId || !date) {
-        return res.status(400).json({ ok: false, message: MSG.NEED_ROOM_DATE });
-    }
-    const booked = await Reservation.find({
-        roomId, date, status: { $ne: "canceled" }
-    }).lean();
+export default async function reservationsRouterFactory(useDb) {
+    const router = express.Router();
 
-    const taken = new Set(booked.map(b => b.timeSlot));
-    const available = DEFAULT_SLOTS.filter(s => !taken.has(s));
-    return res.json({ ok: true, roomId, date, available, taken: [...taken] });
-});
+    // ì €ì¥ì†Œ: DB ë˜ëŠ” ë©”ëª¨ë¦¬
+    let ReservationModel = null;
+    let memoryStore = [];
 
-// ¸ñ·Ï Á¶È¸ (°ü¸®ÀÚ Àü¿ë)
-router.get("/", adminAuth, async (req, res) => {
-    const { roomId, date } = req.query;
-    const q = {};
-    if (roomId) q.roomId = roomId;
-    if (date) q.date = date;
-    const list = await Reservation.find(q).sort({ date: 1, timeSlot: 1, createdAt: 1 }).lean();
-    return res.json({ ok: true, data: list });
-});
-
-// ´ë±â¿­ ÀüÃ¼ Á¶È¸ (°ü¸®ÀÚ Àü¿ë)
-router.get("/waitlist", adminAuth, async (req, res) => {
-    const { roomId, date } = req.query;
-    const q = { status: "waitlist" };
-    if (roomId) q.roomId = roomId;
-    if (date) q.date = date;
-    const list = await Reservation.find(q).sort({ date: 1, timeSlot: 1, createdAt: 1 }).lean();
-    return res.json({ ok: true, data: list });
-});
-
-// ³» ¿¹¾à (°ø°³)
-router.get("/mine", async (req, res) => {
-    const { studentId } = req.query;
-    if (!studentId) return res.status(400).json({ ok: false, message: "studentId required" });
-    const list = await Reservation.find({ "requester.studentId": studentId }).sort({ createdAt: -1 });
-    return res.json({ ok: true, data: list });
-});
-
-// ¿¹¾à »ı¼º (°ø°³)
-router.post("/", async (req, res) => {
-    const { roomId, date, timeSlot, requester, capacity } = req.body;
-    if (!roomId || !date || !timeSlot) {
-        return res.status(400).json({ ok: false, message: MSG.NEED_FIELDS });
-    }
-
-    // µ¿ÀÏ ÇĞ»ıÀÇ µ¿ÀÏ ½½·Ô Áßº¹ ¹æÁö
-    if (requester?.studentId) {
-        const dup = await Reservation.findOne({
-            "requester.studentId": requester.studentId,
-            roomId, date, timeSlot,
-            status: { $ne: "canceled" }
-        });
-        if (dup) {
-            return res.status(409).json({ ok: false, message: MSG.DUP_STUDENT });
+    if (useDb) {
+        try {
+            const mod = await import('../models/Reservation.js');
+            ReservationModel = mod.default;
+        } catch (e) {
+            console.warn('âš ï¸ Reservation model load failed, fallback to memory:', e.message);
+            useDb = false;
         }
     }
 
-    const exists = await Reservation.findOne({
-        roomId, date, timeSlot, status: { $ne: "canceled" }
+    const findReservations = async (spaceId, date) => {
+        if (useDb) {
+            return await ReservationModel.find({ spaceId, date, status: { $in: ['confirmed', 'waitlist'] } }).lean();
+        } else {
+            return memoryStore.filter(r => r.spaceId === spaceId && r.date === date && (r.status === 'confirmed' || r.status === 'waitlist'));
+        }
+    };
+
+    const confirmedCount = (reservations, timeSlot) =>
+        reservations.filter(r => r.timeSlot === timeSlot && r.status === 'confirmed').length;
+
+    // ê°€ìš© ì¡°íšŒ
+    router.get('/availability', async (req, res) => {
+        try {
+            const { spaceId, date } = req.query;
+            const space = SPACES.find(s => s.id === spaceId);
+            if (!space) return res.status(400).json({ ok: false, message: 'ìœ íš¨í•˜ì§€ ì•Šì€ ê³µê°„ì…ë‹ˆë‹¤.' });
+            if (!date) return res.status(400).json({ ok: false, message: 'dateê°€ í•„ìš”í•©ë‹ˆë‹¤ (YYYY-MM-DD).' });
+
+            const list = await findReservations(spaceId, date);
+            const slots = TIMESLOTS.map(ts => {
+                const count = confirmedCount(list, ts);
+                return {
+                    timeSlot: ts,
+                    capacity: space.capacity,
+                    confirmed: count,
+                    available: Math.max(space.capacity - count, 0)
+                };
+            });
+            res.json({ ok: true, space, date, slots });
+        } catch (e) {
+            res.status(500).json({ ok: false, message: e.message });
+        }
     });
 
-    const status = exists ? "waitlist" : "confirmed";
-    const saved = await Reservation.create({
-        roomId, date, timeSlot, requester: requester || {}, capacity: capacity || 1, status
+    // ì˜ˆì•½ ìƒì„±
+    router.post('/', async (req, res) => {
+        try {
+            const { spaceId, date, timeSlot, studentId, studentName } = req.body;
+            const space = SPACES.find(s => s.id === spaceId);
+            if (!space) return res.status(400).json({ ok: false, message: 'ìœ íš¨í•˜ì§€ ì•Šì€ ê³µê°„ì…ë‹ˆë‹¤.' });
+            if (!date || !timeSlot || !studentId || !studentName) {
+                return res.status(400).json({ ok: false, message: 'í•„ìˆ˜ í•­ëª©ì´ ëˆ„ë½ë˜ì—ˆìŠµë‹ˆë‹¤.' });
+            }
+
+            const list = await findReservations(spaceId, date);
+            const dup = list.find(r => r.timeSlot === timeSlot && r.studentId === studentId && r.status !== 'cancelled');
+            if (dup) return res.status(409).json({ ok: false, message: 'ì´ë¯¸ í•´ë‹¹ ì‹œê°„ëŒ€ì— ì˜ˆì•½ì´ ìˆìŠµë‹ˆë‹¤.' });
+
+            const count = confirmedCount(list, timeSlot);
+            const status = count < space.capacity ? 'confirmed' : 'waitlist';
+
+            const newRes = {
+                spaceId, spaceName: space.name, date, timeSlot, studentId, studentName,
+                status, createdAt: new Date()
+            };
+
+            if (useDb) {
+                try {
+                    const doc = await ReservationModel.create(newRes);
+                    return res.status(201).json({ ok: true, data: doc });
+                } catch (e) {
+                    return res.status(409).json({ ok: false, message: e.message });
+                }
+            } else {
+                newRes.id = String(Date.now()) + Math.random().toString(36).slice(2);
+                memoryStore.push(newRes);
+                return res.status(201).json({ ok: true, data: newRes });
+            }
+        } catch (e) {
+            res.status(500).json({ ok: false, message: e.message });
+        }
     });
 
-    return res.status(201).json({ ok: true, data: saved });
-});
+    // ë‚´ ì˜ˆì•½ ëª©ë¡
+    router.get('/my', async (req, res) => {
+        try {
+            const { studentId } = req.query;
+            if (!studentId) return res.status(400).json({ ok: false, message: 'studentIdê°€ í•„ìš”í•©ë‹ˆë‹¤.' });
 
-// Ãë¼Ò(+½Â°İ) (°ü¸®ÀÚ Àü¿ëÀ¸·Î °¡Á¤)
-router.patch("/:id/cancel", adminAuth, async (req, res) => {
-    const { id } = req.params;
+            if (useDb) {
+                const rows = await ReservationModel.find({ studentId, status: { $in: ['confirmed', 'waitlist'] } })
+                    .sort({ date: 1, timeSlot: 1 }).lean();
+                return res.json({ ok: true, data: rows });
+            } else {
+                const rows = memoryStore
+                    .filter(r => r.studentId === studentId && (r.status === 'confirmed' || r.status === 'waitlist'))
+                    .sort((a, b) => (a.date + a.timeSlot).localeCompare(b.date + b.timeSlot));
+                return res.json({ ok: true, data: rows });
+            }
+        } catch (e) {
+            res.status(500).json({ ok: false, message: e.message });
+        }
+    });
 
-    const current = await Reservation.findById(id);
-    if (!current) return res.status(404).json({ ok: false, message: MSG.NOT_FOUND });
-    if (current.status === "canceled") {
-        return res.json({ ok: true, data: current });
-    }
-    current.status = "canceled";
-    await current.save();
+    // ì·¨ì†Œ + ì›¨ì´íŒ… ìŠ¹ê²©
+    router.delete('/:id', async (req, res) => {
+        try {
+            const id = req.params.id;
 
-    const next = await Reservation.findOne({
-        roomId: current.roomId,
-        date: current.date,
-        timeSlot: current.timeSlot,
-        status: "waitlist"
-    }).sort({ createdAt: 1 });
+            if (useDb) {
+                const doc = await ReservationModel.findById(id);
+                if (!doc || doc.status === 'cancelled') return res.status(404).json({ ok: false, message: 'ì˜ˆì•½ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
 
-    if (next) {
-        next.status = "confirmed";
-        await next.save();
-    }
-    return res.json({ ok: true, data: { canceled: current, promoted: next || null } });
-});
+                doc.status = 'cancelled';
+                await doc.save();
 
-// ´Ü°Ç »èÁ¦ (°ü¸®ÀÚ Àü¿ë)
-router.delete("/:id", adminAuth, async (req, res) => {
-    const { id } = req.params;
-    const doc = await Reservation.findByIdAndDelete(id);
-    if (!doc) return res.status(404).json({ ok: false, message: MSG.NOT_FOUND });
-    return res.json({ ok: true, data: doc });
-});
+                const firstWait = await ReservationModel.findOne({
+                    spaceId: doc.spaceId, date: doc.date, timeSlot: doc.timeSlot, status: 'waitlist'
+                }).sort({ createdAt: 1 });
+                if (firstWait) {
+                    firstWait.status = 'confirmed';
+                    await firstWait.save();
+                }
+                return res.json({ ok: true, cancelled: doc._id, promoted: firstWait?._id || null });
+            } else {
+                const idx = memoryStore.findIndex(r => r.id === id && r.status !== 'cancelled');
+                if (idx === -1) return res.status(404).json({ ok: false, message: 'ì˜ˆì•½ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
 
-export default router;
+                const target = memoryStore[idx];
+                memoryStore[idx].status = 'cancelled';
+
+                const candIdx = memoryStore.findIndex(r =>
+                    r.spaceId === target.spaceId && r.date === target.date && r.timeSlot === target.timeSlot && r.status === 'waitlist'
+                );
+                let promoted = null;
+                if (candIdx !== -1) {
+                    memoryStore[candIdx].status = 'confirmed';
+                    promoted = memoryStore[candIdx].id;
+                }
+                return res.json({ ok: true, cancelled: target.id, promoted });
+            }
+        } catch (e) {
+            res.status(500).json({ ok: false, message: e.message });
+        }
+    });
+
+    // ê³µê°„ ëª©ë¡
+    router.get('/spaces', (req, res) => {
+        res.json({ ok: true, data: SPACES });
+    });
+
+    return router;
+}

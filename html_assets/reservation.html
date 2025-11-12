@@ -1,0 +1,66 @@
+
+
+
+
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>공간 예약</title>
+
+    <!-- 한글 폰트: Noto Sans KR (폰트 깨짐 방지) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/assets/css/reservation.css" />
+</head>
+<body>
+    <header class="topbar">
+        <h1>공간 예약</h1>
+        <a class="home-link" href="/">← 메인으로</a>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>예약 폼</h2>
+            <div class="grid">
+                <label>
+                    공간
+                    <select id="spaceSelect"></select>
+                </label>
+                <label>
+                    날짜
+                    <input id="dateInput" type="date" />
+                </label>
+                <label>
+                    시간대
+                    <select id="slotSelect"></select>
+                </label>
+                <label>
+                    학번
+                    <input id="studentIdInput" type="text" placeholder="예: 202221042" />
+                </label>
+                <label>
+                    이름
+                    <input id="studentNameInput" type="text" placeholder="예: 홍길동" />
+                </label>
+            </div>
+            <button id="reserveBtn">예약하기</button>
+            <p id="reserveMsg" class="msg"></p>
+        </section>
+
+        <section class="card">
+            <h2>내 예약 목록</h2>
+            <div class="inline">
+                <input id="lookupStudentId" type="text" placeholder="학번 입력 후 조회" />
+                <button id="lookupBtn">조회</button>
+            </div>
+            <ul id="myList" class="list"></ul>
+        </section>
+    </main>
+
+    <script src="/assets/js/reservation.js"></script>
+</body>
+</html>

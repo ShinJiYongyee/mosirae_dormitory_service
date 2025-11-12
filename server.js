@@ -1,84 +1,74 @@
-﻿import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-
-import reservationsRouter from "./routes/reservations.js";
-import adminAuth from "./middleware/adminAuth.js";
-
-dotenv.config();
-const app = express();
-app.use(cors());
-app.use(express.json());
+// server.js (ESM)
+import 'dotenv/config.js';
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import reservationsRouterFactory from './routes/reservations.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-await mongoose.connect(process.env.MONGODB_URI, {});
+const app = express();
 
-const htmlRoot = path.join(__dirname, "html_assets");
-app.use("/images", express.static(path.join(htmlRoot, "images")));
+// ====== Mongo 연결 (선택) ======
+let useDb = false;
+let mongoose = null;
 
-// app.js를 UTF-8로 서빙
-app.get("/public/app.js", (req, res) => {
-    const p = path.join(__dirname, "public", "app.js");
-    const js = fs.readFileSync(p, "utf8");
-    res.set("Content-Type", "application/javascript; charset=utf-8");
-    res.send(js);
-});
-
-// 공통 HTML 응답 helper (UTF-8)
-function serveHtmlWithScript(filename) {
-    return (req, res) => {
-        const filePath = path.join(htmlRoot, filename);
-        let html = fs.readFileSync(filePath, "utf8");
-        if (!html.includes("/public/app.js")) {
-            html = html.replace("</body>", `<script src="/public/app.js"></script>\n</body>`);
-        }
-        res.set("Content-Type", "text/html; charset=utf-8");
-        res.send(html);
-    };
+if (process.env.MONGODB_URI) {
+    try {
+        const mod = await import('mongoose'); // ESM 동적 import
+        mongoose = mod.default;
+        mongoose.connect(process.env.MONGODB_URI, {
+            serverSelectionTimeoutMS: 5000,
+        }).then(() => {
+            console.log('✅ MongoDB connected');
+            useDb = true;
+        }).catch((e) => {
+            console.warn('⚠️ MongoDB connect failed, fallback to in-memory:', e.message);
+            useDb = false;
+        });
+    } catch (e) {
+        console.warn('⚠️ Mongoose not installed, fallback to in-memory:', e.message);
+    }
 }
 
-// 사용자 페이지
-app.get("/", serveHtmlWithScript("index.html"));
-app.get("/application", serveHtmlWithScript("application_page.html"));
-app.get("/checkin", serveHtmlWithScript("checkin_page.html"));
-app.get("/overnight", serveHtmlWithScript("overnight_page.html"));
-app.get("/maintenance", serveHtmlWithScript("maintenance_page.html"));
-app.get("/points", serveHtmlWithScript("points_page.html"));
+app.use(express.json());
 
-// 공간예약 사용자 페이지
-app.get("/reservation", (req, res) => {
-    const page = path.join(__dirname, "public", "reservation_page.html");
-    let html = fs.readFileSync(page, "utf8");
-    if (!html.includes("/public/app.js")) {
-        html = html.replace("</body>", `<script src="/public/app.js"></script>\n</body>`);
-    }
-    res.set("Content-Type", "text/html; charset=utf-8");
-    res.send(html);
+// 정적 리소스에 UTF-8 지정 (한글 깨짐 방지)
+const withCharset = (res, filePath) => {
+    if (filePath.endsWith('.html')) res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    if (filePath.endsWith('.css')) res.setHeader('Content-Type', 'text/css; charset=utf-8');
+    if (filePath.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+};
+
+// 정적 폴더: public (공용 CSS/JS/이미지)
+app.use('/assets', express.static(path.join(__dirname, 'public'), {
+    setHeaders: withCharset
+}));
+
+// 정적 폴더: html_assets (기존 정적 페이지)
+app.use('/', express.static(path.join(__dirname, 'html_assets'), {
+    setHeaders: withCharset
+}));
+
+// 라우트: 예약 API (팩토리)
+const reservationsRouter = await reservationsRouterFactory(useDb);
+app.use('/api/reservations', reservationsRouter);
+
+// 라우트: 공간예약 페이지(정적)
+app.get('/reservation', (req, res) => {
+    res.sendFile(path.join(__dirname, 'html_assets', 'reservation.html'));
 });
 
-// (관리자 전용) 페이지들 - Basic Auth 보호
-app.get("/admin/reservations", adminAuth, (req, res) => {
-    const page = path.join(__dirname, "public", "admin_reservations.html");
-    let html = fs.readFileSync(page, "utf8");
-    res.set("Content-Type", "text/html; charset=utf-8");
-    res.send(html);
-});
-
-app.get("/admin/waitlist", adminAuth, (req, res) => {
-    const page = path.join(__dirname, "public", "admin_waitlist.html");
-    let html = fs.readFileSync(page, "utf8");
-    res.set("Content-Type", "text/html; charset=utf-8");
-    res.send(html);
-});
-
-// API
-app.use("/api/reservations", reservationsRouter);
+app.use('/', express.static(path.join(__dirname, 'html_assets'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    if (filePath.endsWith('.css'))  res.setHeader('Content-Type', 'text/css; charset=utf-8');
+    if (filePath.endsWith('.js'))   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  }
+}));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running: http://localhost:${PORT}`));
+app.listen(PORT, () => {
+    console.log(`🚀 Server running http://localhost:${PORT}`);
+});

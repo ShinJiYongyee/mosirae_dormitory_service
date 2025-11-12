@@ -1,16 +1,17 @@
 {
-  "name": "mosirae-dormitory-service",
+  "name": "mosirae_dormitory_service",
   "version": "1.0.0",
-  "description": "Dormitory service backend + existing static UI",
-  "main": "server.js",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node server.js"
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "mongoose": "^8.7.0"
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0"
   }
 }
