@@ -12,7 +12,7 @@ const lookupStudentId = $('#lookupStudentId');
 const lookupBtn = $('#lookupBtn');
 const myList = $('#myList');
 
-// ±âº» °ø°£ ¸ñ·Ï ºÒ·¯¿À±â
+// ê¸°ë³¸ ê³µê°„ ëª©ë¡ ë¶ˆëŸ¬ì˜¤ê¸°
 async function loadSpaces() {
     const res = await fetch('/api/reservations/spaces');
     const data = await res.json();
@@ -25,7 +25,7 @@ async function loadSpaces() {
     });
 }
 
-// ³¯Â¥ º¯°æ/°ø°£ º¯°æ ½Ã °¡¿ë½½·Ô ºÒ·¯¿À±â
+// ë‚ ì§œ ì„ íƒ/ê³µê°„ ë³€ê²½ ì‹œ ê°€ìš©ìŠ¬ë¡¯ ë¶ˆëŸ¬ì˜¤ê¸°
 async function loadAvailability() {
     const spaceId = spaceSelect.value;
     const date = dateInput.value;
@@ -38,21 +38,21 @@ async function loadAvailability() {
     const data = await res.json();
     if (!data.ok) {
         slotSelect.innerHTML = '';
-        reserveMsg.textContent = data.message || '°¡¿ë Á¤º¸¸¦ ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù.';
+        reserveMsg.textContent = data.message || 'ê°€ìš© ì •ë³´ë¥¼ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.';
         return;
     }
 
     data.slots.forEach(s => {
         const op = document.createElement('option');
         op.value = s.timeSlot;
-        op.textContent = `${s.timeSlot} (°¡´É: ${s.available}/${s.capacity})`;
-        // ³²ÀºÀÚ¸®°¡ 0ÀÌ¸é ºñÈ°¼ºÈ­
+        op.textContent = `${s.timeSlot} (ê°€ëŠ¥: ${s.available}/${s.capacity})`;
+        // ë‚¨ì€ìë¦¬ê°€ 0ì´ë©´ ë¹„í™œì„±í™”
         if (s.available === 0) op.disabled = true;
         slotSelect.appendChild(op);
     });
 }
 
-// ¿¹¾àÇÏ±â
+// ì˜ˆì•½í•˜ê¸°
 async function makeReservation() {
     const payload = {
         spaceId: spaceSelect.value,
@@ -62,7 +62,7 @@ async function makeReservation() {
         studentName: $('#studentNameInput').value.trim(),
     };
     if (!payload.spaceId || !payload.date || !payload.timeSlot || !payload.studentId || !payload.studentName) {
-        reserveMsg.textContent = '¸ğµç Ç×¸ñÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.';
+        reserveMsg.textContent = 'ëª¨ë“  í•­ëª©ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.';
         return;
     }
     const res = await fetch('/api/reservations', {
@@ -72,18 +72,18 @@ async function makeReservation() {
     });
     const data = await res.json();
     if (data.ok) {
-        const st = data.data.status === 'confirmed' ? 'È®Á¤' : '´ë±â';
-        reserveMsg.textContent = `¿¹¾àÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù. »óÅÂ: ${st}`;
+        const st = data.data.status === 'confirmed' ? 'í™•ì •' : 'ëŒ€ê¸°';
+        reserveMsg.textContent = `ì˜ˆì•½ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤. ìƒíƒœ: ${st}`;
         if (lookupStudentId.value.trim() === payload.studentId) {
-            await loadMyReservations(); // ÀÚ±â ¸ñ·Ï º¸°í ÀÖ¾úÀ¸¸é °»½Å
+            await loadMyReservations(); // ìê¸° í•™ë²ˆ ì¡°íšŒ ì¤‘ì´ì—ˆìœ¼ë©´ ê°±ì‹ 
         }
-        await loadAvailability();    // °¡¿ë ½½·Ô °»½Å
+        await loadAvailability();    // ê°€ìš© ì •ë³´ ê°±ì‹ 
     } else {
-        reserveMsg.textContent = data.message || '¿¹¾à¿¡ ½ÇÆĞÇß½À´Ï´Ù.';
+        reserveMsg.textContent = data.message || 'ì˜ˆì•½ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.';
     }
 }
 
-// ³» ¿¹¾à Á¶È¸
+// ë‚´ ì˜ˆì•½ ì¡°íšŒ
 async function loadMyReservations() {
     const sid = lookupStudentId.value.trim();
     myList.innerHTML = '';
@@ -92,11 +92,11 @@ async function loadMyReservations() {
     const res = await fetch(`/api/reservations/my?studentId=${encodeURIComponent(sid)}`);
     const data = await res.json();
     if (!data.ok) {
-        myList.innerHTML = `<li>¸ñ·ÏÀ» ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù.</li>`;
+        myList.innerHTML = `<li>ì˜ˆì•½ì„ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.</li>`;
         return;
     }
     if (data.data.length === 0) {
-        myList.innerHTML = `<li>¿¹¾à ³»¿ªÀÌ ¾ø½À´Ï´Ù.</li>`;
+        myList.innerHTML = `<li>ì˜ˆì•½ ì •ë³´ê°€ ì—†ìŠµë‹ˆë‹¤.</li>`;
         return;
     }
 
@@ -106,24 +106,24 @@ async function loadMyReservations() {
         li.innerHTML = `
       <div class="meta">
         <div><strong>${row.spaceName}</strong> <span class="badge ${badgeClass}">
-          ${row.status === 'confirmed' ? 'È®Á¤' : (row.status === 'waitlist' ? '´ë±â' : 'Ãë¼Ò')}
+          ${row.status === 'confirmed' ? 'í™•ì •' : (row.status === 'waitlist' ? 'ëŒ€ê¸°' : 'ì·¨ì†Œ')}
         </span></div>
         <div>${row.date} / ${row.timeSlot}</div>
         <div>${row.studentName} (${row.studentId})</div>
       </div>
       <div class="badges">
-        ${row.status !== 'cancelled' ? `<button class="cancel-btn" data-id="${row._id || row.id}">Ãë¼Ò</button>` : ''}
+        ${row.status !== 'cancelled' ? `<button class="cancel-btn" data-id="${row._id || row.id}">ì·¨ì†Œ</button>` : ''}
       </div>
     `;
         myList.appendChild(li);
     });
 
-    // Ãë¼Ò ¹öÆ° ÀÌº¥Æ®
+    // ì·¨ì†Œ ë²„íŠ¼ ì´ë²¤íŠ¸
     myList.querySelectorAll('.cancel-btn').forEach(btn => {
         btn.addEventListener('click', async (ev) => {
             const id = ev.currentTarget.getAttribute('data-id');
             if (!id) return;
-            if (!confirm('Á¤¸» Ãë¼ÒÇÏ½Ã°Ú½À´Ï±î?')) return;
+            if (!confirm('ì˜ˆì•½ ì·¨ì†Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
 
             const res = await fetch(`/api/reservations/${encodeURIComponent(id)}`, { method: 'DELETE' });
             const data = await res.json();
@@ -131,17 +131,17 @@ async function loadMyReservations() {
                 await loadMyReservations();
                 await loadAvailability();
             } else {
-                alert(data.message || 'Ãë¼Ò ½ÇÆĞ');
+                alert(data.message || 'ì·¨ì†Œ ì‹¤íŒ¨');
             }
         });
     });
 }
 
-// ÃÊ±â ¹ÙÀÎµù
+// ì´ˆê¸° ë¡œë”©
 window.addEventListener('DOMContentLoaded', async () => {
     await loadSpaces();
 
-    // ±âº» ³¯Â¥ ¿À´Ã·Î
+    // ê¸°ë³¸ ë‚ ì§œ ì˜¤ëŠ˜ë¡œ
     const now = new Date();
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, '0');

@@ -57,16 +57,9 @@ app.use('/api/reservations', reservationsRouter);
 
 // 라우트: 공간예약 페이지(정적)
 app.get('/reservation', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'reservation.html'));
 });
-
-app.use('/', express.static(path.join(__dirname, 'html_assets'), {
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    if (filePath.endsWith('.css'))  res.setHeader('Content-Type', 'text/css; charset=utf-8');
-    if (filePath.endsWith('.js'))   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-  }
-}));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
