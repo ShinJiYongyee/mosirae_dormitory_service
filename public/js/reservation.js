@@ -1,18 +1,41 @@
-// public/js/reservation.js
+/**
+ * ============================================
+ * 공간예약 시스템 - 클라이언트 스크립트
+ * ============================================
+ * 
+ * 기능:
+ * - 공간 목록 로드
+ * - 날짜/시간대별 가용 정보 조회
+ * - 예약 생성 (정원 초과 시 대기열 등록)
+ * - 내 예약 조회
+ * - 예약 취소
+ */
 
-const $ = (sel) => document.querySelector(sel);
+// ============================================
+// DOM 요소 선택
+// ============================================
+const $ = (sel) => document.querySelector(sel);  // jQuery식 선택자
 
-const spaceSelect = $('#spaceSelect');
-const dateInput = $('#dateInput');
-const slotSelect = $('#slotSelect');
-const reserveBtn = $('#reserveBtn');
-const reserveMsg = $('#reserveMsg');
+// 예약 폼 요소
+const spaceSelect = $('#spaceSelect');           // 공간 선택 드롭다운
+const dateInput = $('#dateInput');               // 날짜 입력
+const slotSelect = $('#slotSelect');             // 시간대 선택 드롭다운
+const reserveBtn = $('#reserveBtn');             // 예약하기 버튼
+const reserveMsg = $('#reserveMsg');             // 결과 메시지 표시 영역
 
-const lookupStudentId = $('#lookupStudentId');
-const lookupBtn = $('#lookupBtn');
-const myList = $('#myList');
+// 내 예약 조회 요소
+const lookupStudentId = $('#lookupStudentId');   // 학번 입력
+const lookupBtn = $('#lookupBtn');               // 조회 버튼
+const myList = $('#myList');                     // 예약 목록 표시 영역
 
-// 기본 공간 목록 불러오기
+// ============================================
+// API 호출 함수들
+// ============================================
+
+/**
+ * 공간 목록 불러오기
+ * API: GET /api/reservations/spaces
+ */
 async function loadSpaces() {
     const res = await fetch('/api/reservations/spaces');
     const data = await res.json();
@@ -45,9 +68,11 @@ async function loadAvailability() {
     data.slots.forEach(s => {
         const op = document.createElement('option');
         op.value = s.timeSlot;
-        op.textContent = `${s.timeSlot} (가능: ${s.available}/${s.capacity})`;
-        // 남은자리가 0이면 비활성화
-        if (s.available === 0) op.disabled = true;
+        if (s.available > 0) {
+            op.textContent = `${s.timeSlot} (남은자리: ${s.available}/${s.capacity})`;
+        } else {
+            op.textContent = `${s.timeSlot} (대기열 등록 가능 - 정원 ${s.capacity}명 초과)`;
+        }
         slotSelect.appendChild(op);
     });
 }
@@ -72,14 +97,20 @@ async function makeReservation() {
     });
     const data = await res.json();
     if (data.ok) {
-        const st = data.data.status === 'confirmed' ? '확정' : '대기';
-        reserveMsg.textContent = `예약이 완료되었습니다. 상태: ${st}`;
+        if (data.data.status === 'confirmed') {
+            reserveMsg.textContent = '✅ 예약이 확정되었습니다!';
+            reserveMsg.style.color = '#16a34a';
+        } else {
+            reserveMsg.textContent = '⏳ 대기열에 등록되었습니다. 취소 발생 시 자동으로 확정됩니다.';
+            reserveMsg.style.color = '#ea580c';
+        }
         if (lookupStudentId.value.trim() === payload.studentId) {
             await loadMyReservations(); // 자기 학번 조회 중이었으면 갱신
         }
         await loadAvailability();    // 가용 정보 갱신
     } else {
-        reserveMsg.textContent = data.message || '예약에 실패했습니다.';
+        reserveMsg.textContent = '❌ ' + (data.message || '예약에 실패했습니다.');
+        reserveMsg.style.color = '#dc2626';
     }
 }
 

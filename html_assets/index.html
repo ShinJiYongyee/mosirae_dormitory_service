@@ -92,19 +92,14 @@
             color: var(--primary);
         }
 
-        .login-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            background: var(--background);
+        /* 로그인 버튼 스타일 (다른 메뉴와 동일하게) */
+        nav a#loginBtn {
             color: var(--foreground);
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s;
+            font-weight: 500;
         }
 
-        .login-btn:hover {
-            background: var(--muted);
+        nav a#loginBtn:hover {
+            color: var(--primary);
         }
 
         .mobile-menu-btn {
@@ -553,13 +548,11 @@
             </div>
 
             <nav id="desktopNav">
-                <a href="#about">생활관소개</a>
-                <a href="#life">모시래 LIFE</a>
-                <a href="#rules">생활수칙</a>
-                <a href="#checkin">입/퇴관 안내</a>
-                <a href="#info">정보광장</a>
-                <a href="#contact">소리함</a>
-                <button class="login-btn">로그인</button>
+                <a href="/admin/reservations">공간예약관리</a>
+                <a href="/admin/function1">관리자용기능1</a>
+                <a href="/admin/function2">관리자용기능2</a>
+                <a href="/admin/function3">관리자용기능3</a>
+                <a href="#" id="loginBtn">로그인</a>
             </nav>
 
             <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="메뉴">
@@ -572,12 +565,10 @@
         </div>
 
         <div class="mobile-nav" id="mobileNav">
-            <a href="#about">생활관소개</a>
-            <a href="#life">모시래 LIFE</a>
-            <a href="#rules">생활수칙</a>
-            <a href="#checkin">입/퇴관 안내</a>
-            <a href="#info">정보광장</a>
-            <a href="#contact">소리함</a>
+            <a href="/admin/reservations">공간예약관리</a>
+            <a href="/admin/function1">관리자용기능1</a>
+            <a href="/admin/function2">관리자용기능2</a>
+            <a href="/admin/function3">관리자용기능3</a>
         </div>
     </header>
 
@@ -661,7 +652,7 @@
                 </a>
 
                 <a href="/reservation" class="service-card">
-                    <div class="service-icon">�</div>
+                    <div class="service-icon">📅</div>
                     <h3>공간대여</h3>
                     <p>스터디룸/다목적홀 예약</p>
                 </a>
@@ -803,7 +794,75 @@
     </section>
 
     <script>
+        // ============================================
+        // 로그인 상태 확인 및 UI 업데이트
+        // ============================================
+        const loginBtn = document.getElementById('loginBtn');
+        let isLoggedIn = false;
+
+        // 페이지 로드 시 로그인 상태 확인
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+                isLoggedIn = data.isLoggedIn;
+
+                if (isLoggedIn) {
+                    // 로그인 상태: 로그아웃 버튼으로 변경
+                    loginBtn.textContent = '로그아웃';
+                } else {
+                    // 비로그인 상태: 로그인 버튼
+                    loginBtn.textContent = '로그인';
+                }
+            } catch (error) {
+                console.error('로그인 상태 확인 오류:', error);
+                isLoggedIn = false;
+                loginBtn.textContent = '로그인';
+            }
+        }
+
+        // 로그인 버튼 클릭 이벤트
+        loginBtn.addEventListener('click', async (e) => {
+            e.preventDefault(); // 모든 경우에 기본 동작 막기
+            
+            if (isLoggedIn) {
+                // 로그아웃 처리
+                if (!confirm('로그아웃 하시겠습니까?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json; charset=utf-8'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.ok) {
+                        alert('로그아웃되었습니다.');
+                        await checkLoginStatus(); // UI 업데이트
+                    } else {
+                        alert('로그아웃 실패: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('로그아웃 오류:', error);
+                    alert('로그아웃 중 오류가 발생했습니다.');
+                }
+            } else {
+                // 로그인 페이지로 이동
+                window.location.href = '/login.html';
+            }
+        });
+
+        // 페이지 로드 시 실행
+        checkLoginStatus();
+
+        // ============================================
         // Mobile menu toggle
+        // ============================================
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileNav = document.getElementById('mobileNav');
 
