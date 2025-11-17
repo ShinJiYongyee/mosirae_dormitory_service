@@ -123,32 +123,32 @@ app.use('/api/reservations', reservationsRouter);
 // ============================================
 // 정적 페이지 라우트
 // ============================================
-// 공간예약 페이지 (사용자용)
+// 입/퇴실 신청(사용자용)
 app.get('/checkin', (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'checkin.html'));
 });
-
+// 외박신청(사용자용)
 app.get('/overnight', (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'overnight.html'));
 });
-
+// 관생신청(사용자용)
 app.get('/application', (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'application.html'));
 });
-
+// 공간예약 페이지 (사용자용)
 app.get('/reservation', (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'reservation.html'));
 });
-
+// 상/벌점 확인(사용자용)
 app.get('/points', (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'points.html'));
 });
-
+// 민원/수리(사용자용)
 app.get('/maintenance', (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'maintenance.html'));
