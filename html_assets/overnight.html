@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>외박신청</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 </head>
+
 <body class="min-h-screen bg-gray-100">
   <div class="container mx-auto px-4 py-8">
     <div class="flex items-center gap-4 mb-8">
@@ -27,26 +29,26 @@
         <div class="grid gap-4">
           <div class="space-y-2">
             <label for="student-id" class="block text-sm font-medium">학번</label>
-            <input id="student-id" type="text" placeholder="학번을 입력하세요" class="w-full border rounded p-2" />
+            <input id="student-id" type="text" placeholder="(필수)학번을 입력하세요" class="w-full border rounded p-2" />
           </div>
 
           <div class="space-y-2">
             <label for="name" class="block text-sm font-medium">이름</label>
-            <input id="name" type="text" placeholder="이름을 입력하세요" class="w-full border rounded p-2" />
+            <input id="name" type="text" placeholder="(필수)이름을 입력하세요" class="w-full border rounded p-2" />
           </div>
 
           <div class="space-y-2">
             <label for="room" class="block text-sm font-medium">호실</label>
-            <input id="room" type="text" placeholder="호실을 입력하세요" class="w-full border rounded p-2" />
+            <input id="room" type="text" placeholder="(필수)호실을 입력하세요" class="w-full border rounded p-2" />
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label for="start-date" class="block text-sm font-medium">외박 시작일</label>
+              <label for="start-date" class="block text-sm font-medium">(필수)외박 시작일</label>
               <input id="start-date" type="date" class="w-full border rounded p-2" />
             </div>
             <div class="space-y-2">
-              <label for="end-date" class="block text-sm font-medium">외박 종료일</label>
+              <label for="end-date" class="block text-sm font-medium">(필수)외박 종료일</label>
               <input id="end-date" type="date" class="w-full border rounded p-2" />
             </div>
           </div>
@@ -74,5 +76,7 @@
       </div>
     </div>
   </div>
+  <script src="/assets/js/overnight.js"></script>
 </body>
+
 </html>

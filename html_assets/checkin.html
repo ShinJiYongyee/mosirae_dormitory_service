@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>입·퇴실 신청</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
 </head>
+
 <body class="min-h-screen bg-gray-100">
   <div class="container mx-auto px-4 py-8">
     <div class="flex items-center gap-4 mb-8">
@@ -26,21 +28,21 @@
         <div class="grid gap-4">
           <div class="space-y-2">
             <label for="student-id" class="block text-sm font-medium">학번</label>
-            <input id="student-id" type="text" placeholder="학번을 입력하세요" class="w-full border rounded p-2" />
+            <input id="student-id" type="text" placeholder="(필수)학번을 입력하세요" class="w-full border rounded p-2" />
           </div>
 
           <div class="space-y-2">
             <label for="name" class="block text-sm font-medium">이름</label>
-            <input id="name" type="text" placeholder="이름을 입력하세요" class="w-full border rounded p-2" />
+            <input id="name" type="text" placeholder="(필수)이름을 입력하세요" class="w-full border rounded p-2" />
           </div>
 
           <div class="space-y-2">
             <label for="room" class="block text-sm font-medium">호실</label>
-            <input id="room" type="text" placeholder="호실을 입력하세요" class="w-full border rounded p-2" />
+            <input id="room" type="text" placeholder="(필수)호실을 입력하세요" class="w-full border rounded p-2" />
           </div>
 
           <div class="space-y-2">
-            <label for="type" class="block text-sm font-medium">신청 종류</label>
+            <label for="type" class="block text-sm font-medium">(필수)신청 종류</label>
             <select id="type" class="w-full border rounded p-2">
               <option value="">신청 종류를 선택하세요</option>
               <option value="checkin">입실 신청</option>
@@ -50,7 +52,7 @@
           </div>
 
           <div class="space-y-2">
-            <label for="date" class="block text-sm font-medium">신청 날짜</label>
+            <label for="date" class="block text-sm font-medium">(필수)신청 날짜</label>
             <input id="date" type="date" class="w-full border rounded p-2" />
           </div>
 
@@ -67,5 +69,9 @@
       </div>
     </div>
   </div>
+
+    <script src="/assets/js/checkin.js"></script>
+
 </body>
+
 </html>

@@ -26,6 +26,9 @@ import path from 'path';                                 // 경로 유틸리티
 import { fileURLToPath } from 'url';                     // ESM에서 __dirname 사용을 위한 변환
 import reservationsRouterFactory from './routes/reservations.js'; // 예약 라우터
 import authRouterFactory from './routes/auth.js';        // 인증 라우터 (로그인/로그아웃)
+import checkinRouterFactory from "./routes/checkin.js";  // 입/퇴실신청 라우터
+import overnightRouterFactory from "./routes/overnight.js"; // 외박신청 라우터
+import applicationRouterFactory from "./routes/application.js"; // 관생신청 라우터
 
 // ============================================
 // 기본 설정
@@ -119,6 +122,18 @@ app.use('/api/auth', authRouter);
  */
 const reservationsRouter = await reservationsRouterFactory(useDb);
 app.use('/api/reservations', reservationsRouter);
+
+// 기숙사 입/퇴실 라우터 활성화
+const checkinRouter = checkinRouterFactory(useDb, mongoose);
+app.use("/api/checkin", checkinRouter);
+
+// 외박신청 라우터 활성화
+const overnightRouter = overnightRouterFactory(useDb, mongoose);
+app.use("/api/overnight", overnightRouter);
+
+// 관생신청 라우터 활성화
+const applicationRouter = applicationRouterFactory(useDb, mongoose);
+app.use("/api/application", applicationRouter);
 
 // ============================================
 // 정적 페이지 라우트
