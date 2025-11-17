@@ -124,9 +124,34 @@ app.use('/api/reservations', reservationsRouter);
 // 정적 페이지 라우트
 // ============================================
 // 공간예약 페이지 (사용자용)
+app.get('/checkin', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'checkin.html'));
+});
+
+app.get('/overnight', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'overnight.html'));
+});
+
+app.get('/application', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'application.html'));
+});
+
 app.get('/reservation', (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.sendFile(path.join(__dirname, 'html_assets', 'reservation.html'));
+});
+
+app.get('/points', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'points.html'));
+});
+
+app.get('/maintenance', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'maintenance.html'));
 });
 
 // ============================================
