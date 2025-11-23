@@ -29,6 +29,8 @@ import authRouterFactory from './routes/auth.js';        // 인증 라우터 (�
 import checkinRouterFactory from "./routes/checkin.js";  // 입/퇴실신청 라우터
 import overnightRouterFactory from "./routes/overnight.js"; // 외박신청 라우터
 import applicationRouterFactory from "./routes/application.js"; // 관생신청 라우터
+import pointsRouterFactory from "./routes/points.js";    // 상벌점 라우터
+import maintenanceRouterFactory from "./routes/maintenance.js"; // 민원/수리 라우터
 
 // ============================================
 // 기본 설정
@@ -50,16 +52,18 @@ if (process.env.MONGODB_URI) {
         const mod = await import('mongoose');
         mongoose = mod.default;
         
-        // MongoDB 연결 시도 (5초 타임아웃)
-        mongoose.connect(process.env.MONGODB_URI, {
-            serverSelectionTimeoutMS: 5000,
-        }).then(() => {
+        // MongoDB 연결 시도 (5초 타임아웃) - await으로 기다림!
+        try {
+            await mongoose.connect(process.env.MONGODB_URI, {
+                serverSelectionTimeoutMS: 5000,
+            });
             console.log('✅ MongoDB connected');
+            console.log('📊 연결된 DB:', mongoose.connection.name || 'test');
             useDb = true;  // DB 모드로 전환
-        }).catch((e) => {
+        } catch (e) {
             console.warn('⚠️ MongoDB connect failed, fallback to in-memory:', e.message);
             useDb = false; // 인메모리 모드로 폴백
-        });
+        }
     } catch (e) {
         console.warn('⚠️ Mongoose not installed, fallback to in-memory:', e.message);
     }
@@ -135,6 +139,14 @@ app.use("/api/overnight", overnightRouter);
 const applicationRouter = applicationRouterFactory(useDb, mongoose);
 app.use("/api/application", applicationRouter);
 
+// 상벌점 라우터 활성화
+const pointsRouter = pointsRouterFactory(useDb, mongoose);
+app.use("/api/points", pointsRouter);
+
+// 민원/수리 라우터 활성화
+const maintenanceRouter = maintenanceRouterFactory(useDb, mongoose);
+app.use("/api/maintenance", maintenanceRouter);
+
 // ============================================
 // 정적 페이지 라우트
 // ============================================
@@ -180,6 +192,23 @@ app.get('/admin/reservations', sessionAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin_reservations.html'));
 });
 
+// 상벌점 관리 페이지 (상벌점 추가/조회/삭제)
+app.get('/admin/points', sessionAuth, (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'admin_points.html'));
+});
+
+// 테스트용 v3 페이지 (캐시 우회)
+app.get('/admin/points-v3', sessionAuth, (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'admin_points_v3.html'));
+});
+
+// 민원 관리 페이지 (민원 조회/상태변경/삭제)
+app.get('/admin/maintenance', sessionAuth, (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.sendFile(path.join(__dirname, 'html_assets', 'admin_maintenance.html'));
+});
 // ============================================
 // 서버 시작
 // ============================================

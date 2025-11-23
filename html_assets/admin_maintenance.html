@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>민원 관리 (관리자)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-6">
+            <a href="/" class="text-blue-600 hover:text-blue-500">← 메인으로</a>
+            <span class="text-sm font-semibold">🔧 민원 관리 (관리자)</span>
+        </div>
+
+        <!-- 필터 -->
+        <div class="max-w-6xl mx-auto bg-white rounded-lg shadow mb-6 p-6">
+            <h2 class="text-lg font-bold mb-4">필터</h2>
+            <div class="grid grid-cols-3 gap-4">
+                <select id="filter-urgency" class="border rounded p-2">
+                    <option value="">긴급도: 전체</option>
+                    <option value="긴급">긴급</option>
+                    <option value="보통">보통</option>
+                    <option value="낮음">낮음</option>
+                </select>
+                <select id="filter-status" class="border rounded p-2">
+                    <option value="">상태: 전체</option>
+                    <option value="접수">접수</option>
+                    <option value="처리중">처리중</option>
+                    <option value="조치완료">조치완료</option>
+                </select>
+                <button id="search-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">검색</button>
+            </div>
+        </div>
+
+        <!-- 목록 -->
+        <div class="max-w-6xl mx-auto bg-white rounded-lg shadow">
+            <div class="p-6 border-b">
+                <h2 class="text-xl font-bold">민원 목록</h2>
+            </div>
+            <div class="p-6">
+                <div id="list" class="space-y-4">
+                    <p class="text-center text-gray-500 py-8">검색 버튼을 클릭하세요</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/admin_maintenance.js?v=2"></script>
+</body>
+</html>

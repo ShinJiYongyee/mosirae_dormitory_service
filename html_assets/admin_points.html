@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상벌점 관리</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-6">
+            <a href="/" class="text-blue-600 hover:text-blue-500">← 메인으로</a>
+            <span class="text-sm font-semibold">🔧 관리자</span>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow mb-6">
+            <div class="p-6 border-b">
+                <h1 class="text-2xl font-bold">상벌점 추가</h1>
+            </div>
+            <div class="p-6">
+                <form id="addForm" class="grid grid-cols-2 gap-4">
+                    <input type="text" id="studentId" placeholder="학번" class="border rounded p-2" required />
+                    <input type="text" id="studentName" placeholder="이름" class="border rounded p-2" required />
+                    <select id="type" class="border rounded p-2" required>
+                        <option value="">구분</option>
+                        <option value="reward">상점</option>
+                        <option value="penalty">벌점</option>
+                    </select>
+                    <input type="number" id="points" placeholder="점수" class="border rounded p-2" min="1" required />
+                    <input type="date" id="date" class="border rounded p-2" required />
+                    <input type="text" id="reason" placeholder="사유" class="border rounded p-2" required />
+                    <button type="submit" class="col-span-2 bg-blue-600 text-white py-2 rounded">추가</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow">
+            <div class="p-6 border-b">
+                <h2 class="text-xl font-bold">목록</h2>
+            </div>
+            <div class="p-6">
+                <button id="loadBtn" class="mb-4 bg-gray-800 text-white px-4 py-2 rounded">불러오기</button>
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-3 py-2 text-left">날짜</th>
+                            <th class="px-3 py-2 text-left">학번</th>
+                            <th class="px-3 py-2 text-left">이름</th>
+                            <th class="px-3 py-2 text-left">구분</th>
+                            <th class="px-3 py-2 text-left">점수</th>
+                            <th class="px-3 py-2 text-left">사유</th>
+                            <th class="px-3 py-2 text-left">조작</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <tr><td colspan="7" class="text-center py-4">버튼을 클릭하세요</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/admin_points.js?v=2"></script>
+</body>
+</html>

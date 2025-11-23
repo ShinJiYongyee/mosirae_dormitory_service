@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>����� ����</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; }
+button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>����� ���� (���� �� ����)</h1>
+<button onclick="loadData()">������ �ҷ�����</button>
+<div id="result"></div>
+<table id="dataTable" style="display:none;">
+<thead>
+<tr>
+<th>��¥</th>
+<th>�й�</th>
+<th>�̸�</th>
+<th>����</th>
+<th>����</th>
+<th>����</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+<script>
+async function loadData() {
+  try {
+    const res = await fetch('/api/points');
+    const data = await res.json();
+    console.log('���� ������:', data);
+    
+    const tbody = document.getElementById('tbody');
+    const table = document.getElementById('dataTable');
+    const result = document.getElementById('result');
+    
+    tbody.innerHTML = '';
+    
+    if (data.length === 0) {
+      result.textContent = '������ ����';
+      table.style.display = 'none';
+      return;
+    }
+    
+    table.style.display = 'table';
+    result.textContent = '';
+    
+    data.forEach(item => {
+      const tr = document.createElement('tr');
+      
+      const td1 = document.createElement('td');
+      td1.textContent = item.date;
+      
+      const td2 = document.createElement('td');
+      td2.textContent = item.studentId;
+      
+      const td3 = document.createElement('td');
+      td3.textContent = item.studentName;
+      
+      const td4 = document.createElement('td');
+      td4.textContent = item.type === 'reward' ? '����' : '����';
+      
+      const td5 = document.createElement('td');
+      td5.textContent = item.points;
+      
+      const td6 = document.createElement('td');
+      td6.textContent = item.reason;
+      
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      tr.appendChild(td4);
+      tr.appendChild(td5);
+      tr.appendChild(td6);
+      
+      tbody.appendChild(tr);
+    });
+    
+    alert('�� ' + data.length + '���� �����͸� �ҷ��Խ��ϴ�.');
+  } catch (err) {
+    document.getElementById('result').textContent = '����: ' + err.message;
+  }
+}
+</script>
+</body>
+</html>

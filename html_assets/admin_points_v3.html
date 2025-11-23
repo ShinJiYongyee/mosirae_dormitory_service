@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상벌점 관리 v3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-6">
+            <a href="/" class="text-blue-600 hover:text-blue-500">← 메인으로</a>
+            <span class="text-sm font-semibold">?? 관리자 [v3 - 한글 테스트]</span>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow mb-6">
+            <div class="p-6 border-b">
+                <h1 class="text-2xl font-bold">상벌점 추가</h1>
+            </div>
+            <div class="p-6">
+                <form id="addForm" class="grid grid-cols-2 gap-4">
+                    <input type="text" id="studentId" placeholder="학번" class="border rounded p-2" required />
+                    <input type="text" id="studentName" placeholder="이름" class="border rounded p-2" required />
+                    <select id="type" class="border rounded p-2" required>
+                        <option value="">구분</option>
+                        <option value="reward">상점</option>
+                        <option value="penalty">벌점</option>
+                    </select>
+                    <input type="number" id="points" placeholder="점수" class="border rounded p-2" min="1" required />
+                    <input type="date" id="date" class="border rounded p-2" required />
+                    <input type="text" id="reason" placeholder="사유" class="border rounded p-2" required />
+                    <button type="submit" class="col-span-2 bg-blue-600 text-white py-2 rounded">추가</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow">
+            <div class="p-6 border-b">
+                <h2 class="text-xl font-bold">목록</h2>
+            </div>
+            <div class="p-6">
+                <button id="loadBtn" class="mb-4 bg-gray-800 text-white px-4 py-2 rounded">불러오기</button>
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-3 py-2 text-left">날짜</th>
+                            <th class="px-3 py-2 text-left">학번</th>
+                            <th class="px-3 py-2 text-left">이름</th>
+                            <th class="px-3 py-2 text-left">구분</th>
+                            <th class="px-3 py-2 text-left">점수</th>
+                            <th class="px-3 py-2 text-left">사유</th>
+                            <th class="px-3 py-2 text-left">조작</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <tr><td colspan="7" class="text-center py-4">버튼을 클릭하세요</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 즉시 실행 - 캐시 우회
+        (function() {
+            const studentIdInput = document.getElementById("studentId");
+            const studentNameInput = document.getElementById("studentName");
+            const typeSelect = document.getElementById("type");
+            const pointsInput = document.getElementById("points");
+            const dateInput = document.getElementById("date");
+            const reasonInput = document.getElementById("reason");
+            const addForm = document.getElementById("addForm");
+            const loadBtn = document.getElementById("loadBtn");
+            const tbody = document.getElementById("tbody");
+
+            // 오늘 날짜 설정
+            dateInput.valueAsDate = new Date();
+
+            // 추가 폼 제출
+            addForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+
+                const data = {
+                    studentId: studentIdInput.value.trim(),
+                    studentName: studentNameInput.value.trim(),
+                    type: typeSelect.value,
+                    points: parseInt(pointsInput.value),
+                    date: dateInput.value,
+                    reason: reasonInput.value.trim()
+                };
+
+                console.log("전송 데이터:", data);
+
+                try {
+                    const res = await fetch("/api/points", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await res.json();
+                    console.log("응답 데이터:", result);
+
+                    if (res.ok) {
+                        alert("추가 완료");
+                        addForm.reset();
+                        dateInput.valueAsDate = new Date();
+                        loadAll();
+                    } else {
+                        alert("실패: " + (result.message || "오류가 발생했습니다."));
+                    }
+                } catch (err) {
+                    console.error("에러:", err);
+                    alert("서버 오류: " + err.message);
+                }
+            });
+
+            // 불러오기 버튼
+            loadBtn.addEventListener("click", function() {
+                loadAll();
+            });
+
+            // 전체 목록 불러오기
+            async function loadAll() {
+                try {
+                    const res = await fetch("/api/points");
+                    const records = await res.json();
+                    
+                    console.log("조회 응답:", records);
+
+                    tbody.innerHTML = "";
+
+                    if (!res.ok || records.length === 0) {
+                        const tr = document.createElement("tr");
+                        const td = document.createElement("td");
+                        td.colSpan = 7;
+                        td.className = "text-center py-4";
+                        td.textContent = "내역 없음";
+                        tr.appendChild(td);
+                        tbody.appendChild(tr);
+                        return;
+                    }
+
+                    records.forEach(function(r) {
+                        const tr = document.createElement("tr");
+                        tr.className = "border-b";
+
+                        // 날짜
+                        const dateTd = document.createElement("td");
+                        dateTd.className = "px-3 py-2";
+                        dateTd.textContent = r.date;
+
+                        // 학번
+                        const studentIdTd = document.createElement("td");
+                        studentIdTd.className = "px-3 py-2";
+                        studentIdTd.textContent = r.studentId;
+
+                        // 이름
+                        const nameTd = document.createElement("td");
+                        nameTd.className = "px-3 py-2";
+                        nameTd.textContent = r.studentName;
+
+                        // 구분
+                        const typeTd = document.createElement("td");
+                        typeTd.className = "px-3 py-2";
+                        typeTd.textContent = r.type === "reward" ? "상점" : "벌점";
+
+                        // 점수
+                        const pointsTd = document.createElement("td");
+                        pointsTd.className = "px-3 py-2";
+                        pointsTd.textContent = r.points;
+
+                        // 사유
+                        const reasonTd = document.createElement("td");
+                        reasonTd.className = "px-3 py-2";
+                        reasonTd.textContent = r.reason;
+
+                        // 삭제 버튼
+                        const actionTd = document.createElement("td");
+                        actionTd.className = "px-3 py-2";
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.className = "border px-2 py-1 rounded";
+                        deleteBtn.textContent = "삭제";
+                        deleteBtn.addEventListener("click", function() {
+                            deleteRecord(r._id || r.id);
+                        });
+                        actionTd.appendChild(deleteBtn);
+
+                        tr.appendChild(dateTd);
+                        tr.appendChild(studentIdTd);
+                        tr.appendChild(nameTd);
+                        tr.appendChild(typeTd);
+                        tr.appendChild(pointsTd);
+                        tr.appendChild(reasonTd);
+                        tr.appendChild(actionTd);
+
+                        tbody.appendChild(tr);
+                    });
+                } catch (err) {
+                    console.error("조회 에러:", err);
+                    alert("조회 실패: " + err.message);
+                }
+            }
+
+            // 삭제
+            async function deleteRecord(id) {
+                if (!confirm("삭제하시겠습니까?")) return;
+
+                try {
+                    const res = await fetch("/api/points/" + id, {
+                        method: "DELETE"
+                    });
+
+                    const result = await res.json();
+
+                    if (res.ok) {
+                        alert("삭제 완료");
+                        loadAll();
+                    } else {
+                        alert("삭제 실패: " + (result.message || "오류가 발생했습니다."));
+                    }
+                } catch (err) {
+                    console.error("삭제 에러:", err);
+                    alert("서버 오류: " + err.message);
+                }
+            }
+        })();
+    </script>
+</body>
+</html>
