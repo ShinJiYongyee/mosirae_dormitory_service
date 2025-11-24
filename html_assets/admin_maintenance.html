@@ -22,7 +22,7 @@
         <!-- 필터 -->
         <div class="max-w-6xl mx-auto bg-white rounded-lg shadow mb-6 p-6">
             <h2 class="text-lg font-bold mb-4">필터</h2>
-            <div class="grid grid-cols-4 gap-4 items-start">
+            <div class="grid grid-cols-3 gap-4">
                 <select id="filter-urgency" class="border rounded p-2">
                     <option value="">긴급도: 전체</option>
                     <option value="긴급">긴급</option>
@@ -35,11 +35,7 @@
                     <option value="처리중">처리중</option>
                     <option value="조치완료">조치완료</option>
                 </select>
-                <div class="flex gap-2">
-                    <button id="search-btn" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">검색</button>
-                    <button id="export-btn" class="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500">엑셀 다운로드</button>
-                </div>
-                <p class="text-xs text-gray-500">엑셀은 현재 필터와 상관없이 전체 목록을 다운로드합니다.</p>
+                <button id="search-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">검색</button>
             </div>
         </div>
 
@@ -56,6 +52,6 @@
         </div>
     </div>
 
-    <script src="/assets/js/admin_maintenance.js?v=3"></script>
+    <script src="/assets/js/admin_maintenance.js?v=2"></script>
 </body>
 </html>
