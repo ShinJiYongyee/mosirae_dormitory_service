@@ -8,6 +8,8 @@
     "dev": "nodemon --watch server.js --watch routes --watch public/js --watch html_assets server.js"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "brcypt": "^1.0.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

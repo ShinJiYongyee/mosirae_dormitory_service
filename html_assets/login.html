@@ -11,116 +11,151 @@
         <div class="max-w-md w-full space-y-8">
             <!-- 헤더 -->
             <div class="text-center">
-                <h2 class="text-3xl font-bold text-gray-900">관리자 로그인</h2>
+                <h2 class="text-3xl font-bold text-gray-900" id="formTitle">관리자 로그인</h2>
                 <p class="mt-2 text-sm text-gray-600">모시래학사 관리 시스템</p>
             </div>
 
-            <!-- 로그인 폼 -->
+            <!-- 컨테이너 -->
             <div class="bg-white rounded-lg shadow-md p-8">
+                <!-- 탭 버튼 -->
+                <div class="flex mb-6">
+                    <button id="tabLogin" class="flex-1 py-2 text-sm font-medium border-b-2 border-blue-600 text-blue-600">로그인</button>
+                    <button id="tabRegister" class="flex-1 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700">회원가입</button>
+                </div>
+
+                <!-- 로그인 폼 -->
                 <form id="loginForm" class="space-y-6">
-                    <!-- 아이디 입력 -->
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700">
-                            아이디
-                        </label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username"
-                            required
-                            autocomplete="username"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="관리자 아이디 입력"
-                        >
+                        <label for="username" class="block text-sm font-medium text-gray-700">아이디</label>
+                        <input type="text" id="username" name="username" required autocomplete="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="관리자 아이디 입력">
                     </div>
-
-                    <!-- 비밀번호 입력 -->
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">
-                            비밀번호
-                        </label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password"
-                            required
-                            autocomplete="current-password"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="비밀번호 입력"
-                        >
+                        <label for="password" class="block text-sm font-medium text-gray-700">비밀번호</label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="비밀번호 입력">
                     </div>
-
-                    <!-- 에러 메시지 -->
-                    <div id="errorMessage" class="hidden">
-                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
-                            <span class="block sm:inline" id="errorText"></span>
-                        </div>
+                    <div id="loginError" class="hidden">
+                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded" role="alert"><span id="loginErrorText"></span></div>
                     </div>
-
-                    <!-- 로그인 버튼 -->
-                    <button 
-                        type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                    >
-                        로그인
-                    </button>
-
-                    <!-- 뒤로가기 버튼 -->
-                    <button 
-                        type="button"
-                        onclick="location.href='/'"
-                        class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                    >
-                        메인으로 돌아가기
-                    </button>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">로그인</button>
                 </form>
+
+                <!-- 회원가입 폼 -->
+                <form id="registerForm" class="space-y-6 hidden">
+                    <div>
+                        <label for="regUsername" class="block text-sm font-medium text-gray-700">아이디</label>
+                        <input type="text" id="regUsername" name="regUsername" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="새 관리자 아이디">
+                    </div>
+                    <div>
+                        <label for="regPassword" class="block text-sm font-medium text-gray-700">비밀번호</label>
+                        <input type="password" id="regPassword" name="regPassword" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="8자 이상">
+                    </div>
+                    <div>
+                        <label for="regPassword2" class="block text-sm font-medium text-gray-700">비밀번호 확인</label>
+                        <input type="password" id="regPassword2" name="regPassword2" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="다시 입력">
+                    </div>
+                    <div id="registerError" class="hidden">
+                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded" role="alert"><span id="registerErrorText"></span></div>
+                    </div>
+                    <div id="registerSuccess" class="hidden">
+                        <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded" role="alert"><span id="registerSuccessText"></span></div>
+                    </div>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700">계정 생성</button>
+                </form>
+
+                <!-- 뒤로가기 버튼 -->
+                <button type="button" onclick="location.href='/'" class="mt-6 w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">메인으로 돌아가기</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 로그인 폼 제출 처리
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const formTitle = document.getElementById('formTitle');
+
+        tabLogin.addEventListener('click', () => {
+            tabLogin.classList.add('border-blue-600','text-blue-600');
+            tabRegister.classList.remove('border-blue-600','text-blue-600');
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            formTitle.textContent = '관리자 로그인';
+        });
+        tabRegister.addEventListener('click', () => {
+            tabRegister.classList.add('border-blue-600','text-blue-600');
+            tabLogin.classList.remove('border-blue-600','text-blue-600');
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            formTitle.textContent = '관리자 회원가입';
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-
+            const errorBox = document.getElementById('loginError');
+            const errorText = document.getElementById('loginErrorText');
+            errorBox.classList.add('hidden');
             try {
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
                     body: JSON.stringify({ username, password })
                 });
-
                 const data = await response.json();
-
                 if (data.ok) {
-                    // 로그인 성공 - 메인 페이지로 이동
                     alert('로그인 성공!');
-                    window.location.href = '/';
+                    location.href = '/';
                 } else {
-                    // 로그인 실패 - 에러 메시지 표시
-                    errorText.textContent = data.message || '로그인에 실패했습니다.';
-                    errorMessage.classList.remove('hidden');
+                    errorText.textContent = data.message || '로그인 실패';
+                    errorBox.classList.remove('hidden');
                 }
-            } catch (error) {
-                console.error('로그인 오류:', error);
-                errorText.textContent = '서버 연결에 실패했습니다.';
-                errorMessage.classList.remove('hidden');
+            } catch (err) {
+                errorText.textContent = '서버 오류';
+                errorBox.classList.remove('hidden');
             }
         });
 
-        // 입력 시 에러 메시지 숨기기
-        document.getElementById('username').addEventListener('input', () => {
-            document.getElementById('errorMessage').classList.add('hidden');
-        });
-        document.getElementById('password').addEventListener('input', () => {
-            document.getElementById('errorMessage').classList.add('hidden');
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const pw1 = document.getElementById('regPassword').value;
+            const pw2 = document.getElementById('regPassword2').value;
+            const errBox = document.getElementById('registerError');
+            const errText = document.getElementById('registerErrorText');
+            const okBox = document.getElementById('registerSuccess');
+            const okText = document.getElementById('registerSuccessText');
+            errBox.classList.add('hidden');
+            okBox.classList.add('hidden');
+            if (pw1 !== pw2) {
+                errText.textContent = '비밀번호가 일치하지 않습니다.';
+                errBox.classList.remove('hidden');
+                return;
+            }
+            if (pw1.length < 8) {
+                errText.textContent = '비밀번호는 8자 이상이어야 합니다.';
+                errBox.classList.remove('hidden');
+                return;
+            }
+            try {
+                const resp = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                    body: JSON.stringify({ username, password: pw1 })
+                });
+                const data = await resp.json();
+                if (data.ok) {
+                    okText.textContent = '계정 생성 완료! 이제 로그인 탭에서 로그인하세요.';
+                    okBox.classList.remove('hidden');
+                } else {
+                    errText.textContent = data.message || '회원가입 실패';
+                    errBox.classList.remove('hidden');
+                }
+            } catch (e) {
+                errText.textContent = '서버 오류';
+                errBox.classList.remove('hidden');
+            }
         });
     </script>
 </body>
