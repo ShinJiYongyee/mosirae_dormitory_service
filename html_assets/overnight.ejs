@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>입·퇴실 신청</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+  <title>외박신청</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 </head>
 
 <body class="min-h-screen bg-gray-100">
@@ -19,11 +19,12 @@
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow">
       <div class="text-center p-6 border-b">
         <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-          🏠
+          ⏰
         </div>
-        <h1 class="text-2xl font-bold">입·퇴실 신청</h1>
-        <p class="text-gray-500">기숙사 입퇴실 신청을 진행하세요</p>
+        <h1 class="text-2xl font-bold">외박신청</h1>
+        <p class="text-gray-500">외박 신청 및 관리를 진행하세요</p>
       </div>
+
       <div class="p-6 space-y-6">
         <div class="grid gap-4">
           <div class="space-y-2">
@@ -41,24 +42,30 @@
             <input id="room" type="text" placeholder="(필수)호실을 입력하세요" class="w-full border rounded p-2" />
           </div>
 
-          <div class="space-y-2">
-            <label for="type" class="block text-sm font-medium">(필수)신청 종류</label>
-            <select id="type" class="w-full border rounded p-2">
-              <option value="">신청 종류를 선택하세요</option>
-              <option value="checkin">입실 신청</option>
-              <option value="checkout">퇴실 신청</option>
-              <option value="temporary">임시 외출</option>
-            </select>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label for="start-date" class="block text-sm font-medium">(필수)외박 시작일</label>
+              <input id="start-date" type="date" class="w-full border rounded p-2" />
+            </div>
+            <div class="space-y-2">
+              <label for="end-date" class="block text-sm font-medium">(필수)외박 종료일</label>
+              <input id="end-date" type="date" class="w-full border rounded p-2" />
+            </div>
           </div>
 
           <div class="space-y-2">
-            <label for="date" class="block text-sm font-medium">(필수)신청 날짜</label>
-            <input id="date" type="date" class="w-full border rounded p-2" />
+            <label for="destination" class="block text-sm font-medium">외박 장소</label>
+            <input id="destination" type="text" placeholder="외박 장소를 입력하세요" class="w-full border rounded p-2" />
           </div>
 
           <div class="space-y-2">
-            <label for="reason" class="block text-sm font-medium">사유</label>
-            <input id="reason" type="text" placeholder="신청 사유를 입력하세요" class="w-full border rounded p-2" />
+            <label for="contact" class="block text-sm font-medium">연락처</label>
+            <input id="contact" type="text" placeholder="연락 가능한 전화번호를 입력하세요" class="w-full border rounded p-2" />
+          </div>
+
+          <div class="space-y-2">
+            <label for="reason" class="block text-sm font-medium">외박 사유</label>
+            <textarea id="reason" rows="3" placeholder="외박 사유를 자세히 입력하세요" class="w-full border rounded p-2"></textarea>
           </div>
         </div>
 
@@ -69,9 +76,7 @@
       </div>
     </div>
   </div>
-
-    <script src="/assets/js/checkin.js"></script>
-
+  <script src="/js/overnight.js"></script>
 </body>
 
 </html>

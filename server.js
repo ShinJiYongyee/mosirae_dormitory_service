@@ -39,6 +39,9 @@ const __filename = fileURLToPath(import.meta.url);       // 현재 파일의 절
 const __dirname = path.dirname(__filename);              // 현재 디렉토리 경로
 const app = express();                                   // Express 앱 생성
 
+app.set("view engine", "ejs");
+app.set("views", "./html_assets");
+
 // ============================================
 // MongoDB 연결 (선택적)
 // ============================================
@@ -51,7 +54,7 @@ if (process.env.MONGODB_URI) {
         // Mongoose 동적 import (설치되지 않은 경우 대비)
         const mod = await import('mongoose');
         mongoose = mod.default;
-        
+
         // MongoDB 연결 시도 (5초 타임아웃) - await으로 기다림!
         try {
             await mongoose.connect(process.env.MONGODB_URI, {
@@ -95,20 +98,20 @@ app.use(session({
  * @param {string} filePath - 파일 경로
  */
 const withCharset = (res, filePath) => {
-    if (filePath.endsWith('.html')) res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    if (filePath.endsWith('.ejs')) res.setHeader('Content-Type', 'text/ejs; charset=utf-8');
     if (filePath.endsWith('.css')) res.setHeader('Content-Type', 'text/css; charset=utf-8');
     if (filePath.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
 };
 
 // /assets 경로로 public 폴더 제공 (CSS, JS, 이미지)
-app.use('/assets', express.static(path.join(__dirname, 'public'), {
+app.use(express.static(path.join(__dirname, 'public'), {
     setHeaders: withCharset
 }));
 
-// 루트 경로로 html_assets 폴더 제공 (메인 페이지)
-app.use('/', express.static(path.join(__dirname, 'html_assets'), {
-    setHeaders: withCharset
-}));
+
+app.get('/', (req, res) => {
+    res.render("index");
+});
 
 // ============================================
 // API 라우트 등록
@@ -150,35 +153,33 @@ app.use("/api/maintenance", maintenanceRouter);
 // ============================================
 // 정적 페이지 라우트
 // ============================================
+// 로그인
+app.get('/login', (req, res) => {
+    res.render("login");
+});
 // 입/퇴실 신청(사용자용)
 app.get('/checkin', (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'checkin.html'));
+    res.render("checkin");
 });
 // 외박신청(사용자용)
 app.get('/overnight', (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'overnight.html'));
+    res.render("overnight");
 });
 // 관생신청(사용자용)
 app.get('/application', (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'application.html'));
+    res.render("application");
 });
 // 공간예약 페이지 (사용자용)
 app.get('/reservation', (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'reservation.html'));
+    res.render("reservation");
 });
 // 상/벌점 확인(사용자용)
 app.get('/points', (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'points.html'));
+    res.render("points");
 });
 // 민원/수리(사용자용)
 app.get('/maintenance', (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'maintenance.html'));
+    res.render("maintenance");
 });
 
 // ============================================
@@ -188,26 +189,22 @@ import sessionAuth from './middleware/sessionAuth.js';
 
 // 예약 관리 페이지 (확정/대기/취소 조회 및 관리)
 app.get('/admin/reservations', sessionAuth, (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'public', 'admin_reservations.html'));
+    res.render("admin_reservations");
 });
 
 // 상벌점 관리 페이지 (상벌점 추가/조회/삭제)
 app.get('/admin/points', sessionAuth, (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'admin_points.html'));
+    res.render("admin_points");
 });
 
 // 테스트용 v3 페이지 (캐시 우회)
 app.get('/admin/points-v3', sessionAuth, (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'admin_points_v3.html'));
+    res.render("admin_points_v3");
 });
 
 // 민원 관리 페이지 (민원 조회/상태변경/삭제)
 app.get('/admin/maintenance', sessionAuth, (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.sendFile(path.join(__dirname, 'html_assets', 'admin_maintenance.html'));
+    res.render("admin_maintenance");
 });
 // ============================================
 // 서버 시작
