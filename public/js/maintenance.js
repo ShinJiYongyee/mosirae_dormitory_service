@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       description: descriptionInput.value.trim(),
     };
     if (!data.studentId || !data.studentName || !data.room || !data.category || !data.urgency || !data.title || !data.description) {
-      alert("\uBAA9\uD45C \uD544\uC694 \uC815\uBCF4\uB97C \uC785\uB825\uD558\uC138\uC694.");
+      alert("\uD544\uC218 \uD56D\uBAA9\uC744 \uBAA8\uB450 \uC785\uB825\uD558\uC138\uC694.");
       return;
     }
     try {
@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(data),
       });
       const result = await res.json();
-      if (res.ok) {
-        alert("\uBB38\uC6D0 \uC2E0\uCCAD \uC644\uB8CC");
+      if (res.ok && result.ok) {
+        alert("\uBBFC\uC6D0/\uC218\uB9AC \uC2E0\uCCAD\uC774 \uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4.");
         studentIdInput.value = "";
         studentNameInput.value = "";
         roomInput.value = "";
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titleInput.value = "";
         descriptionInput.value = "";
       } else {
-        alert("\uC2E0\uCCAD \uC2E4\uD328: " + (result.message || "\uC624\uB958"));
+        alert("\uC2E0\uCCAD \uC2E4\uD328: " + (result.message || "\uC624\uB958\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4."));
       }
     } catch (err) {
       alert("\uC11C\uBC84 \uC624\uB958: " + err.message);
@@ -68,12 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     try {
       const res = await fetch(`/api/maintenance/${studentId}`);
-      const records = await res.json();
+      const result = await res.json();
       listDiv.innerHTML = "";
-      if (!res.ok || records.length === 0) {
+      const records = result.data || [];
+      if (!res.ok || !result.ok || records.length === 0) {
         const p = document.createElement("p");
         p.className = "text-center text-gray-500 py-4";
-        p.textContent = "\uBB38\uC6D0 \uB0B4\uC5ED \uC5C6\uC74C";
+        p.textContent = "\uBBFC\uC6D0 \uB0B4\uC5ED\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.";
         listDiv.appendChild(p);
         return;
       }
@@ -85,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const statusBadge = document.createElement("span");
         statusBadge.className = "px-2 py-1 text-xs rounded";
         statusBadge.textContent = r.status;
-        if (r.status === "\uC870\uCE58\uC644\uB8CC") {
+        if (r.status === "\uCC98\uB9AC\uC644\uB8CC") {
           statusBadge.className += " bg-green-100 text-green-800";
         } else if (r.status === "\uCC98\uB9AC\uC911") {
           statusBadge.className += " bg-yellow-100 text-yellow-800";
@@ -95,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const urgencyBadge = document.createElement("span");
         urgencyBadge.className = "px-2 py-1 text-xs rounded";
         urgencyBadge.textContent = r.urgency;
-        if (r.urgency === "\uAE30\uAE08") {
+        if (r.urgency === "\uAE34\uAE09") {
           urgencyBadge.className += " bg-red-100 text-red-800";
         } else if (r.urgency === "\uBCF4\uD1B5") {
           urgencyBadge.className += " bg-blue-100 text-blue-800";
@@ -124,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         listDiv.appendChild(div);
       });
     } catch (err) {
-      alert("\uC870\uD68C \uC2E4\uD328: " + err.message);
+      alert("\uC870\uD68C \uC624\uB958: " + err.message);
     }
   });
 });
