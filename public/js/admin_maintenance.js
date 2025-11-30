@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBtn = document.getElementById("search-btn");
   const exportBtn = document.getElementById("export-btn");
   const listDiv = document.getElementById("list");
-  const countSpan = document.getElementById("count");
+
 
   // 초기 로드
   loadList();
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
       listDiv.innerHTML = "";
       const records = result.data || [];
-      countSpan.textContent = `총 ${records.length}건`;
+      
       if (!res.ok || !result.ok || records.length === 0) {
         const p = document.createElement('p');
         p.className='text-center text-gray-500 py-8';
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (urgency) params.append("urgency", urgency);
     if (status) params.append("status", status);
     const url = `/api/maintenance/export?${params}`;
-    // 동적 a 태그로 다운로드
+    // 임시 a 태그로 다운로드
     const a = document.createElement('a');
     a.href = url;
     a.download = 'maintenance.csv';
